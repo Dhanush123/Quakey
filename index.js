@@ -109,8 +109,9 @@ function USGSCall(lat, long) {
       var location = place.slice(' ');
       var miles = place.slice(0, place.indexOf("km")) * 0.621371192; //convert km to miles
       var date = new Date(info.features[0].properties.time);
-      return speech = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + location;
+      speech = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + location;
       console.log('USGS speech: ' + speech);
+      return speech;
     }
     else {
       console.log('USGS err: ' + JSON.stringify(err));
