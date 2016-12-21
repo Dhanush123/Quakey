@@ -60,7 +60,7 @@ function getLastCityQuake(requestBody) {
   cityName = requestBody.result.parameters.cityName;
   console.log('cityName: ' + cityName);
   var params = {
-    'address': cityName + ' USA',
+    'address': cityName,
     'components': 'components=country:US',
     'language':   'en',
     'region':     'us'
