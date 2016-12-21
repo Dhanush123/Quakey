@@ -28,7 +28,7 @@ restService.post('/hook', function (req, res) {
           var requestBody = req.body;
           if (requestBody.result) {
             if (requestBody.result.action == 'getLastCityQuake') {
-              getLastCityQuake(requestBody);
+              speech = getLastCityQuake(requestBody);
               console.log('result w/ getLastCityQuake: ', speech);
                 // speech = 'speech: ' + requestBody.result.fulfillment.speech + ' | NODE SERVER WORKS HAHAHA | ';
             }
