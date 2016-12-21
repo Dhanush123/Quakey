@@ -83,7 +83,7 @@ function getLastCityQuake(requestBody) {
       var lat = result.results[0].geometry.location.lat
       var long = result.results[0].geometry.location.lng;
       console.log('result.results[0].geometry.location.lat: ' + lat);
-      console.log('result.results[0].geometry.location.lng: ' + lng);
+      console.log('result.results[0].geometry.location.lng: ' + long);
       return USGSCall(lat, long);
     }
   });
