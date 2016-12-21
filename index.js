@@ -85,7 +85,7 @@ function getLastCityQuake(requestBody) {
       var long = result.results[0].geometry.location.lng;
       console.log('result.results[0].geometry.location.lat: ' + lat);
       console.log('result.results[0].geometry.location.lng: ' + long);
-      USGSCall(lat, long);
+      return USGSCall(lat, long);
       // console.log('USGSResult: ' + USGSResult);
       // return USGSResult;
     }
@@ -109,7 +109,7 @@ function USGSCall(lat, long) {
       var location = place.slice(' ');
       var miles = place.slice(0, place.indexOf("km")) * 0.621371192; //convert km to miles
       var date = new Date(info.features[0].properties.time);
-      speech = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + location;
+      return speech = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + location;
       console.log('USGS speech: ' + speech);
     }
     else {
