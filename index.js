@@ -2,52 +2,111 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const GoogleMapsAPI = require('googlemaps');
+const request = require('request');
 
+var publicConfig = {
+    key: 'AIzaSyBp3rRwTttJWE-R-umfiAqcvGvP6_TNz00',
+    stagger_time:       100, // for elevationPath
+    encode_polylines:   false,
+    secure:             true, // use https
+};
+var gmAPI = new GoogleMapsAPI(publicConfig);
 
 const restService = express();
 restService.use(bodyParser.json());
 
+var cityName;
+
 restService.post('/hook', function (req, res) {
+  console.log('hook request');
+  try {
+      var speech = 'empty speech';
 
-    console.log('hook request');
-
-    try {
-        var speech = 'empty speech';
-
-        if (req.body) {
-            var requestBody = req.body;
-
-            if (requestBody.result) {
-
-                if (requestBody.result.fulfillment) {
-                    speech = 'speech: ' + requestBody.result.fulfillment.speech + ' | NODE SERVER WORKS HAHAHA | ';
-                }
-
-                if (requestBody.result.action) {
-                    speech += 'action: ' + requestBody.result.action;
-                }
+      if (req.body) {
+          var requestBody = req.body;
+          if (requestBody.result) {
+            if (requestBody.result.action == 'getLastCityQuake') {
+              speech = getLastCityQuake(requestBody);
+                // speech = 'speech: ' + requestBody.result.fulfillment.speech + ' | NODE SERVER WORKS HAHAHA | ';
             }
+              // if (requestBody.result.action) {
+              //     speech += 'action: ' + requestBody.result.action;
+              // }
+          }
+      }
+
+      console.log('result: ', speech);
+
+      return res.json({
+        speech: speech,
+        displayText: speech,
+        source: 'apiai-webhook-sample'
+      });
+  }
+  catch (err) {
+    console.error('Cannot process request', err);
+    return res.status(400).json({
+        status: {
+            code: 400,
+            errorType: err.message
         }
-
-        console.log('result: ', speech);
-
-        return res.json({
-            speech: speech,
-            displayText: speech,
-            source: 'apiai-webhook-sample'
-        });
-    } catch (err) {
-        console.error("Can't process request", err);
-
-        return res.status(400).json({
-            status: {
-                code: 400,
-                errorType: err.message
-            }
-        });
-    }
+    });
+  }
 });
 
+function getLastCityQuake(var requestBody) {
+  cityName = requestBody.parameters.cityName;
+  var params = {
+    'address': cityName,
+    'components': 'components=country:US',
+    'language':   'en',
+    'region':     'us'
+  };
+
+  gmAPI.geocode(params, function(err, result) {
+    console.log('err: '+err);
+    console.log('result: '+result);
+    if (result.results[0].geometry.location == undefined) {
+      return 'I am sorry. I was unable to understand the city that you mentioned'; //put this handling in api.ai later
+    }
+    else{
+      console.log('result.results[0]: ' + result.results[0]);
+      console.log('result.results[0].geometry.location: ' + result.results[0].geometry.location);
+      var lat = result.results[0].geometry.location.lat
+      var long = result.results[0].geometry.location.lng;
+      console.log('result.results[0].geometry.location.lat: ' + lat);
+      console.log('result.results[0].geometry.location.lng: ' + lng);
+      return USGSCall(lat, long);
+    }
+  });
+}
+
+function USGSCall(lat, long) {
+  //ex: http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=37.7799&longitude=121.9780&maxradius=180
+  var options = {
+    url: 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=' + lat + '&longitude=' + long + '&maxradiuskm=100&orderby=time',
+  };
+
+  function callback(err, res, body) {
+    if (!err && res.statusCode == 200 && res.count != 0) {
+      console.log('USGS res: ' + JSON.stringify(res));
+      console.log('USGS body: ' + JSON.stringify(body));
+      var info = JSON.parse(body);
+      var mag = info.features[0].properties.mag;
+      var location = info.features[0].properties.place.slice(' ');
+      var miles = info.features[0].properties.place.slice(0, string.indexOf("km")) * 0.621371192; //convert km to miles
+      var date = new Date(info.features[0].properties.time);
+      return 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + location;
+    }
+    else {
+      console.log('USGS err: ' + JSON.stringify(err));
+      return 'It appears there has been no recorded earthquake in' + cityName + ' in the last 30 days.';
+    }
+  }
+  request(options, callback);
+}
+
 restService.listen((process.env.PORT || 8000), function () {
-    console.log("Server listening");
+  console.log('Server listening');
 });
