@@ -58,8 +58,9 @@ restService.post('/hook', function (req, res) {
 function getLastCityQuake(requestBody) {
   console.log('requestBody: ' + JSON.stringify(requestBody));
   cityName = requestBody.result.parameters.cityName;
+  console.log('cityName: ' + cityName);
   var params = {
-    'address': cityName,
+    'address': cityName + ' USA',
     'components': 'components=country:US',
     'language':   'en',
     'region':     'us'
