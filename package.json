@@ -1,0 +1,25 @@
+{
+  "name": "quakey",
+  "version": "1.0.0",
+  "description": "messenger bot w/ api.ai",
+  "main": "index.js",
+  "dependencies": {
+    "apiai": "^3.0.3",
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dhanush123/Quakey.git"
+  },
+  "author": "Dhanush Patel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dhanush123/Quakey/issues"
+  },
+  "homepage": "https://github.com/Dhanush123/Quakey#readme"
+}
