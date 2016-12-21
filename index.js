@@ -101,8 +101,9 @@ function USGSCall(lat, long) {
       console.log('USGS body: ' + JSON.stringify(body));
       var info = JSON.parse(body);
       var mag = info.features[0].properties.mag;
-      var location = info.features[0].properties.place.slice(' ');
-      var miles = info.features[0].properties.place.slice(0, string.indexOf("km")) * 0.621371192; //convert km to miles
+      var place = info.features[0].properties.place;
+      var location = place.slice(' ');
+      var miles = place.slice(0, place.indexOf("km")) * 0.621371192; //convert km to miles
       var date = new Date(info.features[0].properties.time);
       return 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + location;
     }
