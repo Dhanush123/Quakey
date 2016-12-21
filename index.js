@@ -69,6 +69,11 @@ function getLastCityQuake(requestBody) {
   gmAPI.geocode(params, function(err, result) {
     console.log('err: '+err);
     console.log('result: '+result);
+    var propValue;
+    for(var propName in result) {
+        propValue = result[propName]
+        console.log(propName,propValue);
+    }
     if (result.results[0].geometry.location == undefined) {
       return 'I am sorry. I was unable to understand the city that you mentioned'; //put this handling in api.ai later
     }
