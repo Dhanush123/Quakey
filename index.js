@@ -28,6 +28,7 @@ restService.post('/hook', function (req, res) {
           if (requestBody.result) {
             if (requestBody.result.action == 'getLastCityQuake') {
               speech = getLastCityQuake(requestBody);
+              console.log('result w/ getLastCityQuake: ', speech);
                 // speech = 'speech: ' + requestBody.result.fulfillment.speech + ' | NODE SERVER WORKS HAHAHA | ';
             }
               // if (requestBody.result.action) {
@@ -35,9 +36,8 @@ restService.post('/hook', function (req, res) {
               // }
           }
       }
-
       console.log('result: ', speech);
-
+      
       return res.json({
         speech: speech,
         displayText: speech,
@@ -84,7 +84,9 @@ function getLastCityQuake(requestBody) {
       var long = result.results[0].geometry.location.lng;
       console.log('result.results[0].geometry.location.lat: ' + lat);
       console.log('result.results[0].geometry.location.lng: ' + long);
-      return USGSCall(lat, long);
+      var USGSResult = USGSCall(lat, long);
+      console.log('USGSResult: ' + USGSResult);
+      return USGSResult;
     }
   });
 }
