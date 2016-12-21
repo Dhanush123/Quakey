@@ -55,7 +55,7 @@ restService.post('/hook', function (req, res) {
   }
 });
 
-function getLastCityQuake(var requestBody) {
+function getLastCityQuake(requestBody) {
   cityName = requestBody.parameters.cityName;
   var params = {
     'address': cityName,
