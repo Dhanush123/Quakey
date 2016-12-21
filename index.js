@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 
 const restService = express();
 restService.use(bodyParser.json());
+restService.use(bodyParser.urlencoded({ extended: false }));
 
 restService.post('/hook', function (req, res) {
 
