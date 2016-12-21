@@ -17,17 +17,18 @@ const restService = express();
 restService.use(bodyParser.json());
 
 var cityName;
+var speech;
 
 restService.post('/hook', function (req, res) {
   console.log('hook request');
   try {
-      var speech = 'empty speech';
+      speech = 'empty speech';
 
       if (req.body) {
           var requestBody = req.body;
           if (requestBody.result) {
             if (requestBody.result.action == 'getLastCityQuake') {
-              speech = getLastCityQuake(requestBody);
+              getLastCityQuake(requestBody);
               console.log('result w/ getLastCityQuake: ', speech);
                 // speech = 'speech: ' + requestBody.result.fulfillment.speech + ' | NODE SERVER WORKS HAHAHA | ';
             }
@@ -84,9 +85,9 @@ function getLastCityQuake(requestBody) {
       var long = result.results[0].geometry.location.lng;
       console.log('result.results[0].geometry.location.lat: ' + lat);
       console.log('result.results[0].geometry.location.lng: ' + long);
-      var USGSResult = USGSCall(lat, long);
-      console.log('USGSResult: ' + USGSResult);
-      return USGSResult;
+      USGSCall(lat, long);
+      // console.log('USGSResult: ' + USGSResult);
+      // return USGSResult;
     }
   });
 }
@@ -108,15 +109,14 @@ function USGSCall(lat, long) {
       var location = place.slice(' ');
       var miles = place.slice(0, place.indexOf("km")) * 0.621371192; //convert km to miles
       var date = new Date(info.features[0].properties.time);
-      ret = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + location;
-      console.log('USGS ret: ' + ret);
+      speech = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + location;
+      console.log('USGS speech: ' + speech);
     }
     else {
       console.log('USGS err: ' + JSON.stringify(err));
     }
-    return ret;
   }
-  return request(options, callback);
+  request(options, callback);
 }
 
 restService.listen((process.env.PORT || 8000), function () {
