@@ -20,7 +20,7 @@ restService.post('/hook', function (req, res) {
             if (requestBody.result) {
 
                 if (requestBody.result.fulfillment) {
-                    speech = 'speech: ' requestBody.result.fulfillment.speech + ' | NODE SERVER WORKS HAHAHA | ';
+                    speech = 'speech: ' + requestBody.result.fulfillment.speech + ' | NODE SERVER WORKS HAHAHA | ';
                 }
 
                 if (requestBody.result.action) {
@@ -48,6 +48,6 @@ restService.post('/hook', function (req, res) {
     }
 });
 
-restService.listen((process.env.PORT || 5000), function () {
+restService.listen((process.env.PORT || 8000), function () {
     console.log("Server listening");
 });
