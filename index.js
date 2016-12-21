@@ -98,14 +98,17 @@ function USGSCall(lat, long) {
   function callback(err, res, body) {
     if (!err && res.statusCode == 200 && res.count != 0) {
       console.log('USGS res: ' + JSON.stringify(res));
-      console.log('USGS body: ' + JSON.stringify(body));
+      // console.log('USGS body: ' + JSON.stringify(body));
       var info = JSON.parse(body);
+      console.log('USGS features[0]: ' + info.features[0]);
       var mag = info.features[0].properties.mag;
       var place = info.features[0].properties.place;
       var location = place.slice(' ');
       var miles = place.slice(0, place.indexOf("km")) * 0.621371192; //convert km to miles
       var date = new Date(info.features[0].properties.time);
-      return 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + location;
+      var ret = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + location;
+      console.log('USGS ret: ' + ret);
+      return ret;
     }
     else {
       console.log('USGS err: ' + JSON.stringify(err));
