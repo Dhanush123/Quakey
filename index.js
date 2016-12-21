@@ -37,7 +37,7 @@ restService.post('/hook', function (req, res) {
           }
       }
       console.log('result: ', speech);
-      
+
       return res.json({
         speech: speech,
         displayText: speech,
@@ -96,7 +96,7 @@ function USGSCall(lat, long) {
   var options = {
     url: 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=' + lat + '&longitude=' + long + '&maxradiuskm=100&orderby=time',
   };
-
+  var ret = 'It appears there has been no recorded earthquake in' + cityName + ' in the last 30 days.';
   function callback(err, res, body) {
     if (!err && res.statusCode == 200 && res.count != 0) {
       console.log('USGS res: ' + JSON.stringify(res));
@@ -108,16 +108,15 @@ function USGSCall(lat, long) {
       var location = place.slice(' ');
       var miles = place.slice(0, place.indexOf("km")) * 0.621371192; //convert km to miles
       var date = new Date(info.features[0].properties.time);
-      var ret = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + location;
+      ret = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + location;
       console.log('USGS ret: ' + ret);
-      return ret;
     }
     else {
       console.log('USGS err: ' + JSON.stringify(err));
-      return 'It appears there has been no recorded earthquake in' + cityName + ' in the last 30 days.';
     }
+    return ret;
   }
-  request(options, callback);
+  return request(options, callback);
 }
 
 restService.listen((process.env.PORT || 8000), function () {
