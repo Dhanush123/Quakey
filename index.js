@@ -109,9 +109,9 @@ function USGSCall(lat, long, callback) {
       var miles = (place.slice(0, place.indexOf("k")) * 0.621371192).toFixed(2); //convert km to miles and round
       console.log('original time given from USGS: ' + info.features[0].properties.time);
       var dateTime = moment.utc(info.features[0].properties.time);
-      dateTime = moment(dateTime).local();
-      dateTime = dateTime.format('MMMM Do YYYY h:mm:ss a');
-      console.log('dateTime: ' + dateTime);
+      var localDT = moment(dateTime).local();
+      var dateFormat = localDT.format('MMMM Do YYYY h:mm:ss a');
+      console.log('dateTime: ' + dateFormat);
       // dateTime.local();
       // console.log('dateTime: ' + dateTime);
       // dateTime.format('MMMM Do YYYY h:mm:ss a');
