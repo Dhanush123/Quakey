@@ -115,7 +115,7 @@ function USGSCall(lat, long, callback) {
       };
       gmAPI.timezone(params, function(err, result) {
         if(err == null && result.status == 'OK') {
-          var hoursOff += (result.dstOffset + result.rawOffset)/3600; //from GMT
+          var hoursOff = (result.dstOffset + result.rawOffset)/3600; //from GMT
           var tzID = result.timeZoneId;
           var mTime = moment.tz(unixTimeMS, tzID);
           // var dateTime = convertTimestamp(info.features[0].properties.time);
