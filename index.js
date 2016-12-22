@@ -108,10 +108,10 @@ function USGSCall(lat, long, callback) {
       var location = place.substring(place.indexOf("m") + 1);
       var miles = (place.slice(0, place.indexOf("k")) * 0.621371192).toFixed(2); //convert km to miles and round
       console.log('original time given from USGS: ' + info.features[0].properties.time);
-      var dateTime = moment.utc(info.features[0].properties.time);
-      var localDT = moment(dateTime).local();
-      var dateFormat = localDT.format('MMMM Do YYYY h:mm:ss a');
-      console.log('dateTime: ' + dateFormat);
+      var dateTime = convertTimestamp(info.features[0].properties.time);
+      // moment(info.features[0].properties.time).local();
+      // var dateFormat = localDT.format('MMMM Do YYYY h:mm:ss a');
+      // console.log('dateTime: ' + dateFormat);
       // dateTime.local();
       // console.log('dateTime: ' + dateTime);
       // dateTime.format('MMMM Do YYYY h:mm:ss a');
@@ -130,33 +130,33 @@ function USGSCall(lat, long, callback) {
   });
 }
 
-//based on https://gist.github.com/kmaida/6045266
-// function convertTimestamp(timestamp) {
-//   var offset = (new Date().getTimezoneOffset())/-60;
-//   var d = new Date(timestamp),	// Convert the passed timestamp to milliseconds
-// 		yyyy = d.getFullYear(),
-// 		mm = ('0' + (d.getMonth() + 1)).slice(-2),	// Months are zero based. Add leading 0.
-// 		dd = ('0' + d.getDate()).slice(-2),			// Add leading 0.
-// 		hh = d.getHours() + offset,
-// 		h = hh,
-// 		min = d.getMinutes(),
-// 		ampm = 'AM',
-// 		time;
-//
-// 	if (hh > 12) {
-// 		h = hh - 12;
-// 		ampm = 'PM';
-// 	} else if (hh === 12) {
-// 		h = 12;
-// 		ampm = 'PM';
-// 	} else if (hh == 0) {
-// 		h = 12;
-// 	}
-//
-// 	// ie: 2013-02-18, 8:35 AM
-// 	time = mm + '/' + dd + '/' + yyyy + ' at ' + h + ':' + min + ' ' + ampm;
-// 	return time;
-// }
+based on https://gist.github.com/kmaida/6045266
+function convertTimestamp(timestamp) {
+  var offset = (new Date().getTimezoneOffset())/-60;
+  var d = new Date(timestamp),	// Convert the passed timestamp to milliseconds
+		yyyy = d.getFullYear(),
+		mm = ('0' + (d.getMonth() + 1)).slice(-2),	// Months are zero based. Add leading 0.
+		dd = ('0' + d.getDate()).slice(-2),			// Add leading 0.
+		hh = d.getHours() + offset,
+		h = hh,
+		min = d.getMinutes(),
+		ampm = 'AM',
+		time;
+
+	if (hh > 12) {
+		h = hh - 12;
+		ampm = 'PM';
+	} else if (hh === 12) {
+		h = 12;
+		ampm = 'PM';
+	} else if (hh == 0) {
+		h = 12;
+	}
+
+	// ie: 2013-02-18, 8:35 AM
+	time = mm + '/' + dd + '/' + yyyy + ' at ' + h + ':' + min + ' ' + ampm;
+	return time;
+}
 
 //for reference: http://stackoverflow.com/questions/37960857/how-to-show-personalized-welcome-message-in-facebook-messenger?answertab=active#tab-top
 function createGreetingApi(data) {
