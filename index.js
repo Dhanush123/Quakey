@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const GoogleMapsAPI = require('googlemaps');
 const request = require('request');
+const moment = require('moment');
 
 var publicConfig = {
     key: 'AIzaSyBp3rRwTttJWE-R-umfiAqcvGvP6_TNz00',
@@ -107,7 +108,8 @@ function USGSCall(lat, long, callback) {
       var location = place.substring(place.indexOf("m") + 1);
       var miles = (place.slice(0, place.indexOf("k")) * 0.621371192).toFixed(2); //convert km to miles and round
       console.log('original time given from USGS: ' + info.features[0].properties.time);
-      var dateTime = convertTimestamp(info.features[0].properties.time);
+      var dateTime = moment().format('MMMM Do YYYY at h:mm a');
+      //convertTimestamp(info.features[0].properties.time);
       //(new Date(info.features[0].properties.time)).toLocaleString().replace(', ', ' at ');
       var label = miles >= 2 ? 'miles' : 'mile';
       speech = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + label + location + ' on ' + dateTime;
@@ -122,32 +124,32 @@ function USGSCall(lat, long, callback) {
 }
 
 //based on https://gist.github.com/kmaida/6045266
-function convertTimestamp(timestamp) {
-  var offset = (new Date().getTimezoneOffset())/-60;
-  var d = new Date(timestamp),	// Convert the passed timestamp to milliseconds
-		yyyy = d.getFullYear(),
-		mm = ('0' + (d.getMonth() + 1)).slice(-2),	// Months are zero based. Add leading 0.
-		dd = ('0' + d.getDate()).slice(-2),			// Add leading 0.
-		hh = d.getHours() + offset,
-		h = hh,
-		min = d.getMinutes(),
-		ampm = 'AM',
-		time;
-
-	if (hh > 12) {
-		h = hh - 12;
-		ampm = 'PM';
-	} else if (hh === 12) {
-		h = 12;
-		ampm = 'PM';
-	} else if (hh == 0) {
-		h = 12;
-	}
-
-	// ie: 2013-02-18, 8:35 AM
-	time = mm + '/' + dd + '/' + yyyy + ' at ' + h + ':' + min + ' ' + ampm;
-	return time;
-}
+// function convertTimestamp(timestamp) {
+//   var offset = (new Date().getTimezoneOffset())/-60;
+//   var d = new Date(timestamp),	// Convert the passed timestamp to milliseconds
+// 		yyyy = d.getFullYear(),
+// 		mm = ('0' + (d.getMonth() + 1)).slice(-2),	// Months are zero based. Add leading 0.
+// 		dd = ('0' + d.getDate()).slice(-2),			// Add leading 0.
+// 		hh = d.getHours() + offset,
+// 		h = hh,
+// 		min = d.getMinutes(),
+// 		ampm = 'AM',
+// 		time;
+//
+// 	if (hh > 12) {
+// 		h = hh - 12;
+// 		ampm = 'PM';
+// 	} else if (hh === 12) {
+// 		h = 12;
+// 		ampm = 'PM';
+// 	} else if (hh == 0) {
+// 		h = 12;
+// 	}
+//
+// 	// ie: 2013-02-18, 8:35 AM
+// 	time = mm + '/' + dd + '/' + yyyy + ' at ' + h + ':' + min + ' ' + ampm;
+// 	return time;
+// }
 
 //for reference: http://stackoverflow.com/questions/37960857/how-to-show-personalized-welcome-message-in-facebook-messenger?answertab=active#tab-top
 function createGreetingApi(data) {
