@@ -129,7 +129,7 @@ function convertTimestamp(timestamp) {
 		dd = ('0' + d.getDate()).slice(-2),			// Add leading 0.
 		hh = d.getHours(),
 		h = hh,
-		min = d.getMinutes());
+		min = d.getMinutes(),
 		ampm = 'AM',
 		time;
 
