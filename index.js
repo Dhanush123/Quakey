@@ -4,7 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const GoogleMapsAPI = require('googlemaps');
 const request = require('request');
-const moment = require('moment');
+var moment = require('moment-timezone');
 
 var publicConfig = {
     key: 'AIzaSyBp3rRwTttJWE-R-umfiAqcvGvP6_TNz00',
@@ -100,33 +100,44 @@ function USGSCall(lat, long, callback) {
   function (err, res, body) {
     if (!err && res.statusCode == 200 && res.count != 0) {
       console.log('USGS res: ' + JSON.stringify(res));
-      // console.log('USGS body: ' + JSON.stringify(body));
       var info = JSON.parse(body);
-      console.log('USGS features[0]: ' + info.features[0]);
+      console.log('USGS features[0]: ' + JSON.stringify(info.features[0]));
       var mag = info.features[0].properties.mag;
       var place = info.features[0].properties.place;
       var location = place.substring(place.indexOf("m") + 1);
       var miles = (place.slice(0, place.indexOf("k")) * 0.621371192).toFixed(2); //convert km to miles and round
-      console.log('original time given from USGS: ' + info.features[0].properties.time);
-      var dateTime = convertTimestamp(info.features[0].properties.time);
-      // moment(info.features[0].properties.time).local();
-      // var dateFormat = localDT.format('MMMM Do YYYY h:mm:ss a');
-      // console.log('dateTime: ' + dateFormat);
-      // dateTime.local();
-      // console.log('dateTime: ' + dateTime);
-      // dateTime.format('MMMM Do YYYY h:mm:ss a');
-       console.log('dateTime: ' + dateTime);
-       var test = (new Date().getTimezoneOffset())/-60;
-       console.log('offset showing is: ' + test);
-      //convertTimestamp(info.features[0].properties.time);
-      //(new Date(info.features[0].properties.time)).toLocaleString().replace(', ', ' at ');
-      var label = miles >= 2 ? 'miles' : 'mile';
-      speech = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + label + location + ' on ' + dateTime;
-      console.log('USGS speech: ' + speech);
-      callback();
+      var unixTimeMS = info.features[0].properties.time;
+      console.log('original time given from USGS: ' + unixTimeMS);
+
+      var params = {
+        location: lat + ',' + long,
+        timestamp: 1234567890
+      };
+      gmAPI.timezone(params, function(err, result) {
+        if(err == null && result.status == 'OK') {
+          var hoursOff += (result.dstOffset + result.rawOffset)/3600; //from GMT
+          var tzID = result.timeZoneId;
+          var mTime = moment.tz(unixTimeMS, tzID);
+          // var dateTime = convertTimestamp(info.features[0].properties.time);
+          var date = mTime.format('MMMM Do YYYY');
+          var time = ' at ' + mTime.format('h:mm:ss a');
+          // console.log('offset showing is: ' + test);
+          //convertTimestamp(info.features[0].properties.time);
+          //(new Date(info.features[0].properties.time)).toLocaleString().replace(', ', ' at ');
+          var label = miles >= 2 ? 'miles' : 'mile';
+          speech = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + label + location + ' on ' + date + time;
+          console.log('USGS speech: ' + speech);
+          callback();
+        }
+        else {
+          console.log('USGS err from if statement: ' + JSON.stringify(err));
+          speech = ret;
+        }
+      });
+      //-------------------------------------------------------------------------------------------------------------
     }
     else {
-      console.log('USGS err: ' + JSON.stringify(err));
+      console.log('USGS err from else statement: ' + JSON.stringify(err));
       speech = ret;
     }
   });
