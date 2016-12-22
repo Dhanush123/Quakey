@@ -115,7 +115,9 @@ function USGSCall(lat, long, callback) {
       // dateTime.local();
       // console.log('dateTime: ' + dateTime);
       // dateTime.format('MMMM Do YYYY h:mm:ss a');
-      // console.log('dateTime: ' + dateTime);
+       console.log('dateTime: ' + dateTime);
+       var test = (new Date().getTimezoneOffset())/-60;
+       console.log('offset showing is: ' + test);
       //convertTimestamp(info.features[0].properties.time);
       //(new Date(info.features[0].properties.time)).toLocaleString().replace(', ', ' at ');
       var label = miles >= 2 ? 'miles' : 'mile';
@@ -132,12 +134,11 @@ function USGSCall(lat, long, callback) {
 
 // based on https://gist.github.com/kmaida/6045266
 function convertTimestamp(timestamp) {
-  var offset = (new Date().getTimezoneOffset())/-60;
   var d = new Date(timestamp),	// Convert the passed timestamp to milliseconds
 		yyyy = d.getFullYear(),
 		mm = ('0' + (d.getMonth() + 1)).slice(-2),	// Months are zero based. Add leading 0.
 		dd = ('0' + d.getDate()).slice(-2),			// Add leading 0.
-		hh = d.getHours() + offset,
+		hh = d.getHours(),
 		h = hh,
 		min = d.getMinutes(),
 		ampm = 'AM',
