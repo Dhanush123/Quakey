@@ -144,7 +144,7 @@ function convertTimestamp(timestamp) {
 	}
 
 	// ie: 2013-02-18, 8:35 AM
-	time = mm + '/' + dd + '/' + yyyy + ' at ' + h + ':' min + ' ' + ampm;
+	time = mm + '/' + dd + '/' + yyyy + ' at ' + h + ':' + min + ' ' + ampm;
 	return time;
 }
 
