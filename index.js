@@ -104,8 +104,8 @@ function USGSCall(lat, long, callback) {
         console.log('USGS features[0]: ' + info.features[0]);
         var mag = info.features[0].properties.mag;
         var place = info.features[0].properties.place;
-        var location = place.slice(' ');
-        var miles = place.slice(0, place.indexOf("km")) * 0.621371192; //convert km to miles
+        var location = place.substring(place.indexOf("km") + 1);
+        var miles = (place.slice(0, place.indexOf("km")) * 0.621371192).toFixed(2); //convert km to miles and round
         var date = new Date(info.features[0].properties.time);
         speech = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + location;
         console.log('USGS speech: ' + speech);
