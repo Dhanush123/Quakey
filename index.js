@@ -121,6 +121,7 @@ function USGSCall(lat, long, callback) {
           // var dateTime = convertTimestamp(info.features[0].properties.time);
           var date = mTime.format('MMMM Do YYYY');
           var time = ' at ' + mTime.format('h:mm:ss a');
+          console.log(date + time);
           // console.log('offset showing is: ' + test);
           //convertTimestamp(info.features[0].properties.time);
           //(new Date(info.features[0].properties.time)).toLocaleString().replace(', ', ' at ');
