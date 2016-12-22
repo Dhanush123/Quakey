@@ -17,21 +17,17 @@ const restService = express();
 restService.use(bodyParser.json());
 
 var cityName;
-var speech;
-var counter = 0;
+var speech = '';
 
 restService.post('/hook', function (req, res) {
   console.log('hook request');
   try {
-      speech = 'empty speech';
 
       if (req.body) {
           var requestBody = req.body;
           if (requestBody.result) {
             if (requestBody.result.action == 'getLastCityQuake') {
               getLastCityQuake(requestBody);
-              while(counter < 2){
-              }
               console.log('result w/ getLastCityQuake: ', speech);
                 // speech = 'speech: ' + requestBody.result.fulfillment.speech + ' | NODE SERVER WORKS HAHAHA | ';
             }
@@ -85,8 +81,7 @@ function getLastCityQuake(requestBody) {
       var long = result.results[0].geometry.location.lng;
       console.log('result.results[0].geometry.location.lat: ' + lat);
       console.log('result.results[0].geometry.location.lng: ' + long);
-      counter++;
-      USGSCall(lat, long);
+      return USGSCall(lat, long);
       // console.log('USGSResult: ' + USGSResult);
       // return USGSResult;
     }
@@ -95,31 +90,32 @@ function getLastCityQuake(requestBody) {
 
 function USGSCall(lat, long) {
   //ex: http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=37.7799&longitude=121.9780&maxradius=180
-  var options = {
-    url: 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=' + lat + '&longitude=' + long + '&maxradiuskm=100&orderby=time',
-  };
+  // var options = {
+  //   url: 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=' + lat + '&longitude=' + long + '&maxradiuskm=100&orderby=time',
+  // };
   var ret = 'It appears there has been no recorded earthquake in' + cityName + ' in the last 30 days.';
-  function callback(err, res, body) {
-    if (!err && res.statusCode == 200 && res.count != 0) {
-      console.log('USGS res: ' + JSON.stringify(res));
-      // console.log('USGS body: ' + JSON.stringify(body));
-      var info = JSON.parse(body);
-      console.log('USGS features[0]: ' + info.features[0]);
-      var mag = info.features[0].properties.mag;
-      var place = info.features[0].properties.place;
-      var location = place.slice(' ');
-      var miles = place.slice(0, place.indexOf("km")) * 0.621371192; //convert km to miles
-      var date = new Date(info.features[0].properties.time);
-      speech = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + location;
-      counter++;
-      console.log('USGS speech: ' + speech);
-    }
-    else {
-      console.log('USGS err: ' + JSON.stringify(err));
-    }
+
+  request(options.url: 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=' + lat + '&longitude=' + long + '&maxradiuskm=100&orderby=time',
+    function callback(err, res, body) {
+      if (!err && res.statusCode == 200 && res.count != 0) {
+        console.log('USGS res: ' + JSON.stringify(res));
+        // console.log('USGS body: ' + JSON.stringify(body));
+        var info = JSON.parse(body);
+        console.log('USGS features[0]: ' + info.features[0]);
+        var mag = info.features[0].properties.mag;
+        var place = info.features[0].properties.place;
+        var location = place.slice(' ');
+        var miles = place.slice(0, place.indexOf("km")) * 0.621371192; //convert km to miles
+        var date = new Date(info.features[0].properties.time);
+        speech = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + location;
+        console.log('USGS speech: ' + speech);
+        return speech;
+      }
+      else {
+        console.log('USGS err: ' + JSON.stringify(err));
+      }
+    });
   }
-  request(options, callback);
-}
 
 restService.listen((process.env.PORT || 8000), function () {
   console.log('Server listening');
