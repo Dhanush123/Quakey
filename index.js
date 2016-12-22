@@ -27,19 +27,19 @@ restService.post('/hook', function (req, res) {
           var requestBody = req.body;
           if (requestBody.result) {
             if (requestBody.result.action == 'getLastCityQuake') {
-              getLastCityQuake(requestBody);
+              getLastCityQuake(requestBody,function(result) {
+                console.log('result: ', speech);
+                return res.json({
+                  speech: speech,
+                  displayText: speech,
+                  source: 'dhanush-quakey'
+                });
+              });
               console.log('result w/ getLastCityQuake: ', speech);
                 // speech = 'speech: ' + requestBody.result.fulfillment.speech + ' | NODE SERVER WORKS HAHAHA | ';
             }
           }
       }
-      console.log('result: ', speech);
-
-      return res.json({
-        speech: speech,
-        displayText: speech,
-        source: 'apiai-webhook-sample'
-      });
   }
   catch (err) {
     console.error('Cannot process request', err);
@@ -52,7 +52,7 @@ restService.post('/hook', function (req, res) {
   }
 });
 
-function getLastCityQuake(requestBody) {
+function getLastCityQuake(requestBody, callback) {
   console.log('requestBody: ' + JSON.stringify(requestBody));
   cityName = requestBody.result.parameters.cityName;
   console.log('cityName: ' + cityName);
@@ -81,14 +81,14 @@ function getLastCityQuake(requestBody) {
       var long = result.results[0].geometry.location.lng;
       console.log('result.results[0].geometry.location.lat: ' + lat);
       console.log('result.results[0].geometry.location.lng: ' + long);
-      return USGSCall(lat, long);
+      USGSCall(lat, long, callback);
       // console.log('USGSResult: ' + USGSResult);
       // return USGSResult;
     }
   });
 }
 
-function USGSCall(lat, long) {
+function USGSCall(lat, long, callback) {
   //ex: http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=37.7799&longitude=121.9780&maxradius=180
   var options = {
     url: 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=' + lat + '&longitude=' + long + '&maxradiuskm=100&orderby=time',
@@ -109,11 +109,11 @@ function USGSCall(lat, long) {
         var date = new Date(info.features[0].properties.time);
         speech = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + location;
         console.log('USGS speech: ' + speech);
-        return speech;
+        callback();
       }
       else {
         console.log('USGS err: ' + JSON.stringify(err));
-        return ret;
+        speech = ret;
       }
     });
   }
