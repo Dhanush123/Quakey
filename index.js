@@ -130,7 +130,7 @@ function USGSCall(lat, long, callback) {
   });
 }
 
-based on https://gist.github.com/kmaida/6045266
+// based on https://gist.github.com/kmaida/6045266
 function convertTimestamp(timestamp) {
   var offset = (new Date().getTimezoneOffset())/-60;
   var d = new Date(timestamp),	// Convert the passed timestamp to milliseconds
