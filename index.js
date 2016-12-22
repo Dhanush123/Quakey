@@ -107,7 +107,8 @@ function USGSCall(lat, long, callback) {
       var location = place.substring(place.indexOf("m") + 1);
       var miles = (place.slice(0, place.indexOf("k")) * 0.621371192).toFixed(2); //convert km to miles and round
       console.log('original time given from USGS: ' + info.features[0].properties.time);
-      var dateTime = (new Date(info.features[0].properties.time)).toLocaleString().replace(', ', ' at ');
+      var dateTime = convertTimestamp(info.features[0].properties.time);
+      //(new Date(info.features[0].properties.time)).toLocaleString().replace(', ', ' at ');
       var label = miles >= 2 ? 'miles' : 'mile';
       speech = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + label + location + ' on ' + dateTime;
       console.log('USGS speech: ' + speech);
@@ -118,6 +119,33 @@ function USGSCall(lat, long, callback) {
       speech = ret;
     }
   });
+}
+
+//based on https://gist.github.com/kmaida/6045266
+function convertTimestamp(timestamp) {
+  var d = new Date(timestamp * 1000),	// Convert the passed timestamp to milliseconds
+		yyyy = d.getFullYear(),
+		mm = ('0' + (d.getMonth() + 1)).slice(-2),	// Months are zero based. Add leading 0.
+		dd = ('0' + d.getDate()).slice(-2),			// Add leading 0.
+		hh = d.getHours(),
+		h = hh,
+		min = ('0' + d.getMinutes()).slice(-2),		// Add leading 0.
+		ampm = 'AM',
+		time;
+
+	if (hh > 12) {
+		h = hh - 12;
+		ampm = 'PM';
+	} else if (hh === 12) {
+		h = 12;
+		ampm = 'PM';
+	} else if (hh == 0) {
+		h = 12;
+	}
+
+	// ie: 2013-02-18, 8:35 AM
+	time = mm + '/' + dd + '/' + yyyy + ' at ' + min + ' ' + ampm;
+	return time;
 }
 
 //for reference: http://stackoverflow.com/questions/37960857/how-to-show-personalized-welcome-message-in-facebook-messenger?answertab=active#tab-top
