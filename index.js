@@ -54,7 +54,7 @@ restService.post('/hook', function (req, res) {
 
 function getLastCityQuake(requestBody, callback) {
   console.log('requestBody: ' + JSON.stringify(requestBody));
-  cityName = requestBody.result.parameters.cityName;
+  cityName = requestBody.result.parameters.cityName.contains('?') ? requestBody.result.parameters.cityName.replace('?', '') : requestBody.result.parameters.cityName;
   console.log('cityName: ' + cityName);
   var params = {
     'address': cityName,
@@ -96,29 +96,57 @@ function USGSCall(lat, long, callback) {
   var ret = 'It appears there has been no recorded earthquake in' + cityName + ' in the last 30 days.';
 
   request(options,
-    function (err, res, body) {
-      if (!err && res.statusCode == 200 && res.count != 0) {
-        console.log('USGS res: ' + JSON.stringify(res));
-        // console.log('USGS body: ' + JSON.stringify(body));
-        var info = JSON.parse(body);
-        console.log('USGS features[0]: ' + info.features[0]);
-        var mag = info.features[0].properties.mag;
-        var place = info.features[0].properties.place;
-        var location = place.substring(place.indexOf("m") + 1);
-        var miles = (place.slice(0, place.indexOf("k")) * 0.621371192).toFixed(2); //convert km to miles and round
-        var date = new Date(info.features[0].properties.time);
-        var label = miles >= 2 ? ' miles ' : ' mile ';
-        speech = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + label + location;
-        console.log('USGS speech: ' + speech);
-        callback();
-      }
-      else {
-        console.log('USGS err: ' + JSON.stringify(err));
-        speech = ret;
-      }
-    });
-  }
+  function (err, res, body) {
+    if (!err && res.statusCode == 200 && res.count != 0) {
+      console.log('USGS res: ' + JSON.stringify(res));
+      // console.log('USGS body: ' + JSON.stringify(body));
+      var info = JSON.parse(body);
+      console.log('USGS features[0]: ' + info.features[0]);
+      var mag = info.features[0].properties.mag;
+      var place = info.features[0].properties.place;
+      var location = place.substring(place.indexOf("m") + 1);
+      var miles = (place.slice(0, place.indexOf("k")) * 0.621371192).toFixed(2); //convert km to miles and round
+      var date = new Date(info.features[0].properties.time);
+      var label = miles >= 2 ? ' miles ' : ' mile ';
+      speech = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + label + location;
+      console.log('USGS speech: ' + speech);
+      callback();
+    }
+    else {
+      console.log('USGS err: ' + JSON.stringify(err));
+      speech = ret;
+    }
+  });
+}
+
+//for reference: http://stackoverflow.com/questions/37960857/how-to-show-personalized-welcome-message-in-facebook-messenger?answertab=active#tab-top
+function createGreetingApi(data) {
+  request({
+    uri: 'https://graph.facebook.com/v2.6/me/thread_settings',
+    qs: { access_token: PAGE_ACCESS_TOKEN },
+    method: 'POST',
+    json: data
+
+    }, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      console.log("Greeting set successfully!");
+    } else {
+      console.error("Failed calling Thread Reference API", response.statusCode, response.statusMessage, body.error);
+    }
+  });
+}
+
+function setGreetingText() {
+  var greetingData = {
+    setting_type: "greeting",
+    greeting:{
+      text:"Hi {{user_first_name}}, welcome! You can ask when the last earthquake was in any US city."
+    }
+  };
+  createGreetingApi(greetingData);
+}
 
 restService.listen((process.env.PORT || 8000), function () {
   console.log('Server listening');
+  setGreetingText();
 });
