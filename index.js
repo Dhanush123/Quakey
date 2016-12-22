@@ -123,7 +123,7 @@ function USGSCall(lat, long, callback) {
 function createGreetingApi(data) {
   request({
     uri: 'https://graph.facebook.com/v2.6/me/thread_settings',
-    qs: { access_token: PAGE_ACCESS_TOKEN },
+    qs: { access_token: 'EAAChvQrWC7EBAHe7fTmPzZBDJmHI8xH6MuGwomXyETlkFxXvHVluD4ShLZCSgIzEfwrRcSvGAJj0WmPYRnqb8HZBPrYfTY1wAZAJezeH7kJ8Q7oPWRps6ErdYZBKrGi9WPrUulqW5YVdN00lsntdC0KaRFrg3UEWgtSQVbKhe9AZDZD' },
     method: 'POST',
     json: data
 
