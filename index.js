@@ -72,21 +72,26 @@ function getLastCityQuake(requestBody, callback) {
         propValue = result[propName]
         console.log(propName,propValue);
     }
-    if (result.results[0].geometry.location == undefined) {
+    if (result.results[0] == undefined) {
       speech = 'I am sorry. I was unable to understand the city that you mentioned.'; //put this handling in api.ai later
       callback();
     }
-    else{
-      console.log('result.results[0]: ' + result.results[0]);
-      console.log('result.results[0].geometry.location: ' + result.results[0].geometry.location);
-      var lat = result.results[0].geometry.location.lat
-      var long = result.results[0].geometry.location.lng;
-      console.log('result.results[0].geometry.location.lat: ' + lat);
-      console.log('result.results[0].geometry.location.lng: ' + long);
-      USGSCall(lat, long, callback);
-      // console.log('USGSResult: ' + USGSResult);
-      // return USGSResult;
-    }
+    else {
+      if(result.results[0].geometry.location == undefined) {
+        speech = 'I am sorry. I was unable to understand the city that you mentioned.'; //put this handling in api.ai later
+        callback();
+      }
+      else {
+        console.log('result.results[0]: ' + result.results[0]);
+        console.log('result.results[0].geometry.location: ' + result.results[0].geometry.location);
+        var lat = result.results[0].geometry.location.lat
+        var long = result.results[0].geometry.location.lng;
+        console.log('result.results[0].geometry.location.lat: ' + lat);
+        console.log('result.results[0].geometry.location.lng: ' + long);
+        USGSCall(lat, long, callback);
+        // console.log('USGSResult: ' + USGSResult);
+        // return USGSResult;
+      }
   });
 }
 
