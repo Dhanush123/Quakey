@@ -19,6 +19,7 @@ restService.use(bodyParser.json());
 
 var cityName = '';
 var stateName = '';
+var address = '';
 var speech = '';
 
 restService.post('/hook', function (req, res) {
@@ -57,8 +58,8 @@ restService.post('/hook', function (req, res) {
 function getLastCityQuake(requestBody, callback) {
   console.log('requestBody: ' + JSON.stringify(requestBody));
   cityName = requestBody.result.parameters.cityName.indexOf('?') != -1 ? requestBody.result.parameters.cityName.replace('?', '') : requestBody.result.parameters.cityName;
-  stateName = requestBody.result.parameters.cityName.indexOf(', ') != -1 ? requestBody.result.parameters.stateName.replace(',', '') : requestBody.result.parameters.stateName;
-  var address = cityName;
+  stateName = requestBody.result.parameters.stateName.indexOf(', ') != -1 ? requestBody.result.parameters.stateName.replace(',', '') : requestBody.result.parameters.stateName;
+  address = cityName;
   if(stateName != ''){
     address = cityName + ', ' + stateName;
     console.log('stateName: ' + stateName);
@@ -108,7 +109,7 @@ function USGSCall(lat, long, callback) {
   var options = {
     url: 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=' + lat + '&longitude=' + long + '&maxradiuskm=100&orderby=time',
   };
-  var ret = 'It appears there has been no recorded earthquake in ' + cityName + ' in the last 30 days in a 62 mile radius. If you feel this is a mistake, try phrasing the question differently or try again later.';
+  var ret = 'It appears there has been no recorded earthquake in ' + address + ' in the last 30 days in a 62 mile radius. If you feel this is a mistake, try phrasing the question differently or try again later.';
 
   request(options,
   function (err, res, body) {
@@ -142,7 +143,7 @@ function USGSCall(lat, long, callback) {
             //convertTimestamp(info.features[0].properties.time);
             //(new Date(info.features[0].properties.time)).toLocaleString().replace(', ', ' at ');
             var label = miles >= 2 ? 'miles' : 'mile';
-            speech = 'The last earthquake in ' + cityName + ' was a ' + mag + ' ' + miles + ' ' + label + location + ' on ' + date + time;
+            speech = 'The last earthquake in ' + address + ' was a ' + mag + ' ' + miles + ' ' + label + location + ' on ' + date + time;
             console.log('USGS speech: ' + speech);
             callback();
           }
