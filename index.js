@@ -92,6 +92,7 @@ function getLastCityQuake(requestBody, callback) {
         // console.log('USGSResult: ' + USGSResult);
         // return USGSResult;
       }
+    }
   });
 }
 
