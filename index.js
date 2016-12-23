@@ -58,10 +58,14 @@ function getLastCityQuake(requestBody, callback) {
   console.log('requestBody: ' + JSON.stringify(requestBody));
   cityName = requestBody.result.parameters.cityName.indexOf('?') != -1 ? requestBody.result.parameters.cityName.replace('?', '') : requestBody.result.parameters.cityName;
   stateName = requestBody.result.parameters.cityName.indexOf(', ') != -1 ? requestBody.result.parameters.stateName.replace(',', '') : requestBody.result.parameters.stateName;
-
+  var address = cityName;
+  if(stateName != ''){
+    address = cityName + ', ' + stateName;
+    console.log('stateName: ' + stateName);
+  }
   console.log('cityName: ' + cityName);
   var params = {
-    'address': cityName,
+    'address': address,
     'components': 'components=country:US',
     'language':   'en',
     'region':     'us'
