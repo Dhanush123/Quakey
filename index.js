@@ -57,15 +57,19 @@ restService.post('/hook', function (req, res) {
 
 function getLastCityQuake(requestBody, callback) {
   console.log('requestBody: ' + JSON.stringify(requestBody));
-  cityName = requestBody.result.parameters.cityName.indexOf('?') != -1 ? requestBody.result.parameters.cityName.replace('?', '') : requestBody.result.parameters.cityName;
-  address = cityName;
-  stateName = requestBody.result.parameters.stateName;
-  if(stateName != ''){
+  bool addC = false;
+  if(cityName.length > 0){
+    cityName = requestBody.result.parameters.cityName.indexOf('?') != -1 ? requestBody.result.parameters.cityName.replace('?', '') : requestBody.result.parameters.cityName;
+    address = cityName;
+    addC = true;
+    console.log('cityName: ' + cityName);
+  }
+  if(stateName.length > 0){
     stateName = requestBody.result.parameters.stateName.indexOf(', ') != -1 ? requestBody.result.parameters.stateName.replace(',', '') : requestBody.result.parameters.stateName;
-    address = cityName + ', ' + stateName;
+    address += addC ? ', ' + stateName : stateName;
+    address += stateName;
     console.log('stateName: ' + stateName);
   }
-  console.log('cityName: ' + cityName);
   var params = {
     'address': address,
     'components': 'components=country:US',
@@ -106,8 +110,15 @@ function getLastCityQuake(requestBody, callback) {
 
 function USGSCall(lat, long, callback) {
   //ex: http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=37.7799&longitude=121.9780&maxradius=180
+  var radius;
+  if(cityName.length == 0 && stateName.length > 0){
+    radius = '&maxradiuskm=770'; //state search
+  }
+  else{
+    radius = '&maxradiuskm=80'; //city search
+  }
   var options = {
-    url: 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=' + lat + '&longitude=' + long + '&maxradiuskm=100&orderby=time',
+    url: 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=' + lat + '&longitude=' + long + radius + '&orderby=time'
   };
   var noneFound = 'It appears there has been no recorded earthquake in ' + address + ' in the last 30 days in a 62 mile radius. If you feel this is a mistake, try phrasing the question differently or try again later.';
 
