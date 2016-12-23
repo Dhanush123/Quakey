@@ -77,17 +77,14 @@ function getLastCityQuake(requestBody, callback) {
     console.log('err: '+err);
     console.log('result: '+result);
     var propValue;
+    var errMsg = 'I am sorry. I was unable to get the coordinates for the city that you mentioned. Try adding the state name for better results.';
     for(var propName in result) {
         propValue = result[propName]
         console.log(propName,propValue);
     }
-    if (result.results[0] == undefined) {
-      speech = 'I am sorry. I was unable to understand the city that you mentioned.'; //put this handling in api.ai later
-      callback();
-    }
-    else {
+    if(err == null && result.status == 'OK'){
       if(result.results[0].geometry.location == undefined) {
-        speech = 'I am sorry. I was unable to get the coordinates for the city that you mentioned. Try adding the state name for better results.'; //put this handling in api.ai later
+        speech = errMsg;
         callback();
       }
       else {
@@ -98,9 +95,11 @@ function getLastCityQuake(requestBody, callback) {
         console.log('result.results[0].geometry.location.lat: ' + lat);
         console.log('result.results[0].geometry.location.lng: ' + long);
         USGSCall(lat, long, callback);
-        // console.log('USGSResult: ' + USGSResult);
-        // return USGSResult;
       }
+    }
+    else {
+      speech = errMsg; //put this handling in api.ai later
+      callback();
     }
   });
 }
@@ -110,7 +109,7 @@ function USGSCall(lat, long, callback) {
   var options = {
     url: 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=' + lat + '&longitude=' + long + '&maxradiuskm=100&orderby=time',
   };
-  var ret = 'It appears there has been no recorded earthquake in ' + address + ' in the last 30 days in a 62 mile radius. If you feel this is a mistake, try phrasing the question differently or try again later.';
+  var noneFound = 'It appears there has been no recorded earthquake in ' + address + ' in the last 30 days in a 62 mile radius. If you feel this is a mistake, try phrasing the question differently or try again later.';
 
   request(options,
   function (err, res, body) {
@@ -136,13 +135,9 @@ function USGSCall(lat, long, callback) {
             var hoursOff = (result.dstOffset + result.rawOffset)/3600; //from GMT
             var tzID = result.timeZoneId;
             var mTime = moment.tz(unixTimeMS, tzID);
-            // var dateTime = convertTimestamp(info.features[0].properties.time);
             var date = mTime.format('MMMM Do YYYY');
             var time = ' at ' + mTime.format('h:mm:ss a');
             console.log(date + time);
-            // console.log('offset showing is: ' + test);
-            //convertTimestamp(info.features[0].properties.time);
-            //(new Date(info.features[0].properties.time)).toLocaleString().replace(', ', ' at ');
             var label = miles >= 2 ? 'miles' : 'mile';
             speech = 'The last earthquake in ' + address + ' was a ' + mag + ' ' + miles + ' ' + label + location + ' on ' + date + time;
             console.log('USGS speech: ' + speech);
@@ -152,43 +147,16 @@ function USGSCall(lat, long, callback) {
       }
       else{
         console.log('USGS err from if statement: ' + JSON.stringify(err));
-        speech = ret;
+        speech = noneFound;
         callback();
       }
     }
     else {
       console.log('USGS err from else statement: ' + JSON.stringify(err));
-      speech = ret;
+      speech = noneFound;
       callback();
     }
   });
-}
-
-// based on https://gist.github.com/kmaida/6045266
-function convertTimestamp(timestamp) {
-  var d = new Date(timestamp),	// Convert the passed timestamp to milliseconds
-		yyyy = d.getFullYear(),
-		mm = ('0' + (d.getMonth() + 1)).slice(-2),	// Months are zero based. Add leading 0.
-		dd = ('0' + d.getDate()).slice(-2),			// Add leading 0.
-		hh = d.getHours(),
-		h = hh,
-		min = d.getMinutes(),
-		ampm = 'AM',
-		time;
-
-	if (hh > 12) {
-		h = hh - 12;
-		ampm = 'PM';
-	} else if (hh === 12) {
-		h = 12;
-		ampm = 'PM';
-	} else if (hh == 0) {
-		h = 12;
-	}
-
-	// ie: 2013-02-18, 8:35 AM
-	time = mm + '/' + dd + '/' + yyyy + ' at ' + h + ':' + min + ' ' + ampm;
-	return time;
 }
 
 //for reference: http://stackoverflow.com/questions/37960857/how-to-show-personalized-welcome-message-in-facebook-messenger?answertab=active#tab-top
