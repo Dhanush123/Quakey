@@ -17,7 +17,8 @@ var gmAPI = new GoogleMapsAPI(publicConfig);
 const restService = express();
 restService.use(bodyParser.json());
 
-var cityName;
+var cityName = '';
+var stateName = '';
 var speech = '';
 
 restService.post('/hook', function (req, res) {
@@ -56,6 +57,8 @@ restService.post('/hook', function (req, res) {
 function getLastCityQuake(requestBody, callback) {
   console.log('requestBody: ' + JSON.stringify(requestBody));
   cityName = requestBody.result.parameters.cityName.indexOf('?') != -1 ? requestBody.result.parameters.cityName.replace('?', '') : requestBody.result.parameters.cityName;
+  stateName = requestBody.result.parameters.cityName.indexOf(', ') != -1 ? requestBody.result.parameters.stateName.replace(',', '') : requestBody.result.parameters.stateName;
+
   console.log('cityName: ' + cityName);
   var params = {
     'address': cityName,
