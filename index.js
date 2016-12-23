@@ -95,7 +95,7 @@ function USGSCall(lat, long, callback) {
   var options = {
     url: 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=' + lat + '&longitude=' + long + '&maxradiuskm=100&orderby=time',
   };
-  var ret = 'It appears there has been no recorded earthquake in' + cityName + ' in the last 30 days in a 62 mile radius. If you feel this is a mistake, try phrasing the question differently or try again later.';
+  var ret = 'It appears there has been no recorded earthquake in ' + cityName + ' in the last 30 days in a 62 mile radius. If you feel this is a mistake, try phrasing the question differently or try again later.';
 
   request(options,
   function (err, res, body) {
