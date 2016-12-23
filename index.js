@@ -58,9 +58,9 @@ restService.post('/hook', function (req, res) {
 function getLastCityQuake(requestBody, callback) {
   console.log('requestBody: ' + JSON.stringify(requestBody));
   cityName = requestBody.result.parameters.cityName.indexOf('?') != -1 ? requestBody.result.parameters.cityName.replace('?', '') : requestBody.result.parameters.cityName;
-  stateName = requestBody.result.parameters.stateName.indexOf(', ') != -1 ? requestBody.result.parameters.stateName.replace(',', '') : requestBody.result.parameters.stateName;
   address = cityName;
   if(stateName != ''){
+    stateName = requestBody.result.parameters.stateName.indexOf(', ') != -1 ? requestBody.result.parameters.stateName.replace(',', '') : requestBody.result.parameters.stateName;
     address = cityName + ', ' + stateName;
     console.log('stateName: ' + stateName);
   }
