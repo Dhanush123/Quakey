@@ -78,7 +78,7 @@ function getLastCityQuake(requestBody, callback) {
     }
     else {
       if(result.results[0].geometry.location == undefined) {
-        speech = 'I am sorry. I was unable to understand the city that you mentioned.'; //put this handling in api.ai later
+        speech = 'I am sorry. I was unable to get the coordinates for the city that you mentioned.'; //put this handling in api.ai later
         callback();
       }
       else {
