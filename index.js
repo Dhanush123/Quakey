@@ -138,11 +138,13 @@ function USGSCall(lat, long, callback) {
       else{
         console.log('USGS err from if statement: ' + JSON.stringify(err));
         speech = ret;
+        callback();
       }
     }
     else {
       console.log('USGS err from else statement: ' + JSON.stringify(err));
       speech = ret;
+      callback();
     }
   });
 }
