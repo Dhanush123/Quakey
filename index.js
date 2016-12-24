@@ -66,8 +66,8 @@ function getLastCityQuake(requestBody, callback) {
   }
   if(requestBody.result.parameters.stateName.length > 0){
     stateName = requestBody.result.parameters.stateName.indexOf(', ') != -1 ? requestBody.result.parameters.stateName.replace(',', '') : requestBody.result.parameters.stateName;
+    stateName = stateName.indexOf('?') != -1 ? stateName.replace('?', '') : stateName;
     address += addC ? ', ' + stateName : stateName;
-    address += stateName;
     console.log('stateName: ' + stateName);
   }
   var params = {
