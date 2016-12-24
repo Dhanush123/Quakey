@@ -111,16 +111,19 @@ function getLastCityQuake(requestBody, callback) {
 function USGSCall(lat, long, callback) {
   //ex: http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=37.7799&longitude=121.9780&maxradius=180
   var radius;
+  var num;
   if(cityName.length == 0 && stateName.length > 0){
     radius = '&maxradiuskm=770'; //state search
+    num = 770;
   }
   else{
     radius = '&maxradiuskm=80'; //city search
+    num = 80;
   }
   var options = {
     url: 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=' + lat + '&longitude=' + long + radius + '&orderby=time'
   };
-  var noneFound = 'It appears there has been no recorded earthquake in ' + address + ' in the last 30 days in a 62 mile radius. If you feel this is a mistake, try phrasing the question differently or try again later.';
+  var noneFound = 'It appears there has been no recorded earthquake in ' + address + ' in the last 30 days in a ' + (num * 0.621371).toFixed(2) + ' mile radius. If you feel this is a mistake, try phrasing the question differently or try again later.';
 
   request(options,
   function (err, res, body) {
