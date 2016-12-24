@@ -32,6 +32,9 @@ restService.post('/hook', function (req, res) {
             if (requestBody.result.action == 'getLastCityQuake') {
               getLastCityQuake(requestBody,function(result) {
                 console.log('result: ', speech);
+                cityName = '';
+                stateName = '';
+                address = '';
                 return res.json({
                   speech: speech,
                   displayText: speech,
