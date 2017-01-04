@@ -153,7 +153,7 @@ function USGSCall(lat, long, callback) {
             var tzID = result.timeZoneId;
             var mTime = moment.tz(unixTimeMS, tzID);
             var date = mTime.format('MMMM Do YYYY');
-            var time = ' at ' + mTime.format('h:mm:ss a');
+            var time = ' at ' + mTime.format('h:mm:ss a') + ' local time';
             console.log(date + time);
             var label = miles >= 2 ? 'miles' : 'mile';
             speech = 'The last earthquake in ' + address + ' was a ' + mag + ' ' + miles + ' ' + label + location + ' on ' + date + time;
