@@ -180,7 +180,7 @@ function USGSCall(lat, long, callback) {
 function createGreetingApi(data) {
   request({
     uri: 'https://graph.facebook.com/v2.6/me/thread_settings',
-    qs: { access_token: 'EAAChvQrWC7EBAHe7fTmPzZBDJmHI8xH6MuGwomXyETlkFxXvHVluD4ShLZCSgIzEfwrRcSvGAJj0WmPYRnqb8HZBPrYfTY1wAZAJezeH7kJ8Q7oPWRps6ErdYZBKrGi9WPrUulqW5YVdN00lsntdC0KaRFrg3UEWgtSQVbKhe9AZDZD' },
+    qs: { access_token: 'EAAChvQrWC7EBAMfU5EHN9ZBS9fHvtigQDbfh3uyh20tzj1ZCx5MYYWtEUuTMW8XbegDZBjw3OtfgsMf00zYlWf8mrCZCYAgFRaUMG88NYeVe5VM5vCJiCaTBoG9F9NGMeXo4VF29p501FmnSvhcYosY9l3r5QBvyzbVPE14PaDl82ySgSDRQ' },
     method: 'POST',
     json: data
 
