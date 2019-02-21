@@ -22,7 +22,7 @@ var stateName = '';
 var address = '';
 var speech = '';
 
-restService.post('/hook', function (req, res) {
+restService.post('/', function (req, res) {
   console.log('hook request');
   try {
 
