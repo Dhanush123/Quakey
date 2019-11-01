@@ -28,8 +28,8 @@ restService.post('/', function (req, res) {
 
       if (req.body) {
           var requestBody = req.body;
-          if (requestBody.result) {
-            if (requestBody.result.action == 'getLastCityQuake') {
+          if (requestBody.queryResult) {
+            if (requestBody.queryResult.action == 'getLastCityQuake') {
               getLastCityQuake(requestBody,function(result) {
                 console.log('result: ', speech);
                 cityName = '';
@@ -42,7 +42,6 @@ restService.post('/', function (req, res) {
                 });
               });
               console.log('result w/ getLastCityQuake: ', speech);
-                // speech = 'speech: ' + requestBody.result.fulfillment.speech + ' | NODE SERVER WORKS HAHAHA | ';
             }
           }
       }
@@ -61,14 +60,14 @@ restService.post('/', function (req, res) {
 function getLastCityQuake(requestBody, callback) {
   console.log('requestBody: ' + JSON.stringify(requestBody));
   var addC = false;
-  if(requestBody.result.parameters.cityName.length > 0){
-    cityName = requestBody.result.parameters.cityName.indexOf('?') != -1 ? requestBody.result.parameters.cityName.replace('?', '') : requestBody.result.parameters.cityName;
+  if(requestBody.queryResult.parameters.cityName.length > 0){
+    cityName = requestBody.queryResult.parameters.cityName.indexOf('?') != -1 ? requestBody.queryResult.parameters.cityName.replace('?', '') : requestBody.queryResult.parameters.cityName;
     address = cityName;
     addC = true;
     console.log('cityName: ' + cityName);
   }
-  if(requestBody.result.parameters.stateName.length > 0){
-    stateName = requestBody.result.parameters.stateName.indexOf(', ') != -1 ? requestBody.result.parameters.stateName.replace(',', '') : requestBody.result.parameters.stateName;
+  if(requestBody.queryResult.parameters.stateName.length > 0){
+    stateName = requestBody.queryResult.parameters.stateName.indexOf(', ') != -1 ? requestBody.queryResult.parameters.stateName.replace(',', '') : requestBody.queryResult.parameters.stateName;
     stateName = stateName.indexOf('?') != -1 ? stateName.replace('?', '') : stateName;
     address += addC ? ', ' + stateName : stateName;
     console.log('stateName: ' + stateName);
