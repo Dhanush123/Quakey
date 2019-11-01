@@ -36,7 +36,7 @@ restService.post('/', function (req, res) {
                 stateName = '';
                 address = '';
                 return res.json({
-                  text: speech,
+                  fulfillment_text: speech,
                   source: 'dhanush-quakey'
                 });
               });
