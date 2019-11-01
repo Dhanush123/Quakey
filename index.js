@@ -87,7 +87,7 @@ function getLastCityQuake(requestBody, callback) {
     var errMsg = 'I am sorry. I was unable to get the coordinates for the city that you mentioned. Try adding the state name for better results.';
     for(var propName in result) {
         propValue = result[propName]
-        console.log(propName,propValue);
+        console.log("->",propName,propValue);
     }
     if(err == null && result.status == 'OK'){
       if(result.results[0].geometry.location == undefined) {
