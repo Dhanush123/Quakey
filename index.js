@@ -127,7 +127,7 @@ function USGSCall(lat, long, callback) {
     url: 'http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=' + lat + '&longitude=' + long + radius + '&orderby=time'
   };
   var noneFound = 'It appears there has been no recorded earthquake in ' + address + ' in the last 30 days in a ' + (num * 0.621371).toFixed(2) + ' mile radius. If you feel this is a mistake, try phrasing the question differently or try again later.';
-
+  console.log("usgs url",options.url);
   request(options,
   function (err, res, body) {
     if (!err && res.statusCode == 200 && res.count != 0) {
