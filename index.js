@@ -154,7 +154,7 @@ function USGSCall(lat, long, callback) {
             var time = ' at ' + mTime.format('h:mm:ss a') + ' local time';
             console.log(date + time);
             var label = miles >= 2 ? 'miles' : 'mile';
-            speech = 'The last earthquake in ' + address + ' was a ' + mag + ' ' + miles + ' ' + label + location + ' on ' + date + time;
+            speech = 'The last earthquake in ' + address + ' was a ' + mag + ' magnitude ' + miles + ' ' + label + location + ' on ' + date + time;
             console.log('USGS speech: ' + speech);
             callback();
           }
